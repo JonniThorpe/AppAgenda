@@ -9,13 +9,37 @@ package appagenda;
  *
  * @author usuario
  */
-public class AppAgenda {
+import entidades.Provincia;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.EntityManager; 
+import javax.persistence.EntityManagerFactory; 
+import javax.persistence.Persistence; 
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public class AppAgenda{ 
+        public static void main(String[] args){ 
+           Map<String,String> emfProperties = new HashMap<String,String>();
+           emfProperties.put("javax.persistence.schema-generation.database.action","create"); 
+           EntityManagerFactory emf=
+                   Persistence.createEntityManagerFactory("AppAgendaPU",emfProperties);
+           EntityManager em = emf.createEntityManager();
+           
+           Provincia provinciaSevilla=new Provincia();
+           provinciaSevilla.setNombre("Sevilla");
+           
+           //Inserccion de objetos
+           em.getTransaction().begin();
+           em.persist(provinciaSevilla);
+           em.getTransaction().commit();
+           
+           
+           em.close(); 
+           emf.close(); 
+           try{ 
+               
+               DriverManager.getConnection("jdbc:derby:BDAgenda;shutdown=true"); 
+           } catch (SQLException ex){ }
+        } 
     }
-    
-}
